@@ -1,0 +1,70 @@
+---
+- name: Ensure Powerline is configured for Bash
+  hosts: myhost
+
+  vars:
+    home_dir: "/home/serge"
+    powerline_config: |
+      if [ -f `which powerline-daemon` ]; then
+        powerline-daemon -q
+        POWERLINE_BASH_CONTINUATION=1
+        POWERLINE_BASH_SELECT=1
+        . /usr/share/powerline/bash/powerline.sh
+      fi
+    prereq_packages:
+      - git
+      - wget
+      - curl
+      - ruby-devel
+      - util-linux-user
+      - redhat-rpm-config
+      - gcc
+      - gcc-c++
+      - make
+  
+    font_packages:
+      - fontawesome-fonts
+  
+    powerline_packages:
+      - powerline 
+      - vim-powerline
+      - tmux-powerline
+      - powerline-fonts
+
+  tasks:
+    - name: Ensure the pre-reqs are installed
+      dnf:
+        name: "{{ prereq_packages }}"
+        state: present
+      become: true
+
+    - name: Ensure nerd fonts are downloaded using git
+      git:
+        repo: https://github.com/ryanoasis/nerd-fonts
+        dest: "{{ home_dir }}/.nerd-fonts"
+        depth: 1
+
+    - name: Ensure nerd-fonts are installed
+      shell: |
+        cd {{ home_dir }}/.nerd-fonts
+        ./install.sh
+      become: true
+
+    - name: Ensure the awesome fonts are installed
+      dnf:
+        name: "{{ font_packages }}"
+        state: present
+      become: true
+
+    - name: Ensure that the Powerline packages are installed
+      dnf:
+        name: "{{ powerline_packages }}"
+        state: present
+      become: true
+
+    - name: Ensure that the bashrc contains the powerline configuration block
+      blockinfile:
+        backup: true
+        block: "{{ powerline_config }}"
+        path: "{{ home_dir }}/.bashrc"
+        state: present
