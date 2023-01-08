@@ -1,6 +1,9 @@
 ---
 # This playbook woks for Fedora 37 and adds the a powerline prompt to bash
 # Note that the home_dir var needs to be set to the user's home directory
+# 
+# Reference: https://fedoramagazine.org/tuning-your-bash-or-zsh-shell-in-workstation-and-silverblue/
+# 
 - name: Ensure Powerline is configured for Bash
   hosts: myhost
 
