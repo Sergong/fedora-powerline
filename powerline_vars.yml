@@ -1,0 +1,27 @@
+---
+powerline_config: |
+  if [ -f `which powerline-daemon` ]; then
+    powerline-daemon -q
+    POWERLINE_BASH_CONTINUATION=1
+    POWERLINE_BASH_SELECT=1
+    . /usr/share/powerline/bash/powerline.sh
+  fi
+prereq_packages:
+  - git
+  - wget
+  - curl
+  - ruby-devel
+  - util-linux-user
+  - redhat-rpm-config
+  - gcc
+  - gcc-c++
+  - make
+
+font_packages:
+  - fontawesome-fonts
+
+powerline_packages:
+  - powerline 
+  - vim-powerline
+  - tmux-powerline
+  - powerline-fonts
