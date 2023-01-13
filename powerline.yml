@@ -7,12 +7,18 @@
 - name: Ensure Powerline is configured for Bash
   hosts: myhost
 
-  vars:
-    home_dir: "/home/serge"
   vars_files:
     - powerline_vars.yml
 
   tasks:
+    - name: Get the home dir
+      shell: echo $HOME
+      register: my_home
+
+    - name: Set the home_dir fact
+      set_fact:
+        home_dir: "{{ my_home.stdout }}"
+
     - name: Ensure the pre-reqs are installed
       dnf:
         name: "{{ prereq_packages }}"
@@ -49,3 +55,9 @@
         block: "{{ powerline_config }}"
         path: "{{ home_dir }}/.bashrc"
         state: present
+
+    - name: Remove the temporary .nerd-fonts directory
+      file:
+        path: "{{ home_dir }}/.nerd-fonts"
+        state: absent
+
